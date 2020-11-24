@@ -33,7 +33,7 @@ import (
 // DataVolumesGetter has a method to return a DataVolumeInterface.
 // A group's client should implement this interface.
 type DataVolumesGetter interface {
-	DataVolumes(namespace string) DataVolumeInterface
+	DataVolumes() DataVolumeInterface
 }
 
 // DataVolumeInterface has methods to work with DataVolume resources.
@@ -52,14 +52,12 @@ type DataVolumeInterface interface {
 // dataVolumes implements DataVolumeInterface
 type dataVolumes struct {
 	client rest.Interface
-	ns     string
 }
 
 // newDataVolumes returns a DataVolumes
-func newDataVolumes(c *CdiV1beta1Client, namespace string) *dataVolumes {
+func newDataVolumes(c *CdiV1beta1Client) *dataVolumes {
 	return &dataVolumes{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -67,7 +65,6 @@ func newDataVolumes(c *CdiV1beta1Client, namespace string) *dataVolumes {
 func (c *dataVolumes) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.DataVolume, err error) {
 	result = &v1beta1.DataVolume{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -84,7 +81,6 @@ func (c *dataVolumes) List(ctx context.Context, opts v1.ListOptions) (result *v1
 	}
 	result = &v1beta1.DataVolumeList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -101,7 +97,6 @@ func (c *dataVolumes) Watch(ctx context.Context, opts v1.ListOptions) (watch.Int
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -112,7 +107,6 @@ func (c *dataVolumes) Watch(ctx context.Context, opts v1.ListOptions) (watch.Int
 func (c *dataVolumes) Create(ctx context.Context, dataVolume *v1beta1.DataVolume, opts v1.CreateOptions) (result *v1beta1.DataVolume, err error) {
 	result = &v1beta1.DataVolume{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(dataVolume).
@@ -125,7 +119,6 @@ func (c *dataVolumes) Create(ctx context.Context, dataVolume *v1beta1.DataVolume
 func (c *dataVolumes) Update(ctx context.Context, dataVolume *v1beta1.DataVolume, opts v1.UpdateOptions) (result *v1beta1.DataVolume, err error) {
 	result = &v1beta1.DataVolume{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		Name(dataVolume.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -138,7 +131,6 @@ func (c *dataVolumes) Update(ctx context.Context, dataVolume *v1beta1.DataVolume
 // Delete takes name of the dataVolume and deletes it. Returns an error if one occurs.
 func (c *dataVolumes) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		Name(name).
 		Body(&opts).
@@ -153,7 +145,6 @@ func (c *dataVolumes) DeleteCollection(ctx context.Context, opts v1.DeleteOption
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("datavolumes").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -166,7 +157,6 @@ func (c *dataVolumes) DeleteCollection(ctx context.Context, opts v1.DeleteOption
 func (c *dataVolumes) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.DataVolume, err error) {
 	result = &v1beta1.DataVolume{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("datavolumes").
 		Name(name).
 		SubResource(subresources...).

@@ -33,7 +33,6 @@ import (
 // FakeDataVolumes implements DataVolumeInterface
 type FakeDataVolumes struct {
 	Fake *FakeCdiV1beta1
-	ns   string
 }
 
 var datavolumesResource = schema.GroupVersionResource{Group: "cdi.kubevirt.io", Version: "v1beta1", Resource: "datavolumes"}
@@ -43,8 +42,7 @@ var datavolumesKind = schema.GroupVersionKind{Group: "cdi.kubevirt.io", Version:
 // Get takes name of the dataVolume, and returns the corresponding dataVolume object, and an error if there is any.
 func (c *FakeDataVolumes) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.DataVolume, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(datavolumesResource, c.ns, name), &v1beta1.DataVolume{})
-
+		Invokes(testing.NewRootGetAction(datavolumesResource, name), &v1beta1.DataVolume{})
 	if obj == nil {
 		return nil, err
 	}
@@ -54,8 +52,7 @@ func (c *FakeDataVolumes) Get(ctx context.Context, name string, options v1.GetOp
 // List takes label and field selectors, and returns the list of DataVolumes that match those selectors.
 func (c *FakeDataVolumes) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.DataVolumeList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(datavolumesResource, datavolumesKind, c.ns, opts), &v1beta1.DataVolumeList{})
-
+		Invokes(testing.NewRootListAction(datavolumesResource, datavolumesKind, opts), &v1beta1.DataVolumeList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -76,15 +73,13 @@ func (c *FakeDataVolumes) List(ctx context.Context, opts v1.ListOptions) (result
 // Watch returns a watch.Interface that watches the requested dataVolumes.
 func (c *FakeDataVolumes) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(datavolumesResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(datavolumesResource, opts))
 }
 
 // Create takes the representation of a dataVolume and creates it.  Returns the server's representation of the dataVolume, and an error, if there is any.
 func (c *FakeDataVolumes) Create(ctx context.Context, dataVolume *v1beta1.DataVolume, opts v1.CreateOptions) (result *v1beta1.DataVolume, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(datavolumesResource, c.ns, dataVolume), &v1beta1.DataVolume{})
-
+		Invokes(testing.NewRootCreateAction(datavolumesResource, dataVolume), &v1beta1.DataVolume{})
 	if obj == nil {
 		return nil, err
 	}
@@ -94,8 +89,7 @@ func (c *FakeDataVolumes) Create(ctx context.Context, dataVolume *v1beta1.DataVo
 // Update takes the representation of a dataVolume and updates it. Returns the server's representation of the dataVolume, and an error, if there is any.
 func (c *FakeDataVolumes) Update(ctx context.Context, dataVolume *v1beta1.DataVolume, opts v1.UpdateOptions) (result *v1beta1.DataVolume, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(datavolumesResource, c.ns, dataVolume), &v1beta1.DataVolume{})
-
+		Invokes(testing.NewRootUpdateAction(datavolumesResource, dataVolume), &v1beta1.DataVolume{})
 	if obj == nil {
 		return nil, err
 	}
@@ -105,14 +99,13 @@ func (c *FakeDataVolumes) Update(ctx context.Context, dataVolume *v1beta1.DataVo
 // Delete takes name of the dataVolume and deletes it. Returns an error if one occurs.
 func (c *FakeDataVolumes) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(datavolumesResource, c.ns, name), &v1beta1.DataVolume{})
-
+		Invokes(testing.NewRootDeleteAction(datavolumesResource, name), &v1beta1.DataVolume{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeDataVolumes) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(datavolumesResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(datavolumesResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.DataVolumeList{})
 	return err
@@ -121,8 +114,7 @@ func (c *FakeDataVolumes) DeleteCollection(ctx context.Context, opts v1.DeleteOp
 // Patch applies the patch and returns the patched dataVolume.
 func (c *FakeDataVolumes) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.DataVolume, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(datavolumesResource, c.ns, name, pt, data, subresources...), &v1beta1.DataVolume{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(datavolumesResource, name, pt, data, subresources...), &v1beta1.DataVolume{})
 	if obj == nil {
 		return nil, err
 	}

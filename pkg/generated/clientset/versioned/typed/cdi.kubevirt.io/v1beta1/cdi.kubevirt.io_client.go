@@ -44,8 +44,8 @@ func (c *CdiV1beta1Client) CDIConfigs() CDIConfigInterface {
 	return newCDIConfigs(c)
 }
 
-func (c *CdiV1beta1Client) DataVolumes(namespace string) DataVolumeInterface {
-	return newDataVolumes(c, namespace)
+func (c *CdiV1beta1Client) DataVolumes() DataVolumeInterface {
+	return newDataVolumes(c)
 }
 
 // NewForConfig creates a new CdiV1beta1Client for the given config.
